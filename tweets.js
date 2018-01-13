@@ -1,4 +1,5 @@
 import React from 'react';
+import Tweet from './tweet';
 
 class Tweets extends React.Component {
   constructor(props) {
@@ -9,10 +10,10 @@ class Tweets extends React.Component {
     return (
       <div>
         {this.props.tweets.map((tweet, index) => {
-            return (
-              <h5 key={index}> {tweet} </h5>
-            );
-          })}
+          return (
+            <Tweet searchHashtagOrHandle={this.props.searchHashtagOrHandle} key={index} renderText={this.props.renderText} tweet={tweet} />
+          );
+        })}
       </div>
     );
   }

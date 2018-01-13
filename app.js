@@ -13,6 +13,8 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.search = this.search.bind(this);
+    this.renderText = this.renderText.bind(this);
+    this.searchHashtagOrHandle = this.searchHashtagOrHandle.bind(this);
   }
 
   componentWillMount() {
@@ -37,6 +39,21 @@ class App extends React.Component {
       })
   }
 
+  searchHashtagOrHandle(input) {
+    console.log(input)
+    this.search(input)
+  }
+
+  renderText(text) {
+    var tokens = text.split(/@(\S*)/g);
+    for (var i = 1; i < tokens.length; i += 2) {
+      let handle = '@' + tokens[i]
+      tokens[i] = <u><span href='#' onClick={() => {
+        this.searchHashtagOrHandle(handle)}}>{handle}</span></u>;
+    }
+    return <span className="line">{tokens}</span>;
+  }
+
   handleChange(event) {
     this.setState({searchValue: event.target.value});
   }
@@ -56,7 +73,7 @@ class App extends React.Component {
           </label>
           <input type="submit" value="Submit" />
         </form>
-        <Tweets tweets={this.state.tweets} />
+        <Tweets searchHashtagOrHandle={this.searchHashtagOrHandle} renderText={this.renderText} tweets={this.state.tweets} />
       </div>
     );
   }
