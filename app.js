@@ -1,70 +1,66 @@
+import Tweets from './tweets';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-class TodoApp extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { items: [], text: '' , location: []};
+    this.state = {
+      tweets: [],
+      searchValue: ''
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.search = this.search.bind(this);
   }
 
   componentWillMount() {
-    this.getLocation();
+    this.search();
   }
 
-
-  getLocation() {
-    this.success = (pos) => {
-      var crd = pos.coords;
-      this.setState(() => ({
-        location: [crd.longitude, crd.latitude]
-      }));
-      console.log(this.state.location);
-    };
-
-    this.error = (err) => {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
-    };
-
-    var options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0
-    };
-
-    navigator.geolocation.getCurrentPosition(this.success, this.error, options);
+  search(input) {
+    axios.get('/search', { params: { search: input } })
+      .then(results => {
+        let newData;
+        if (results.data.length < 1) {
+          newData = ['Sorry, No Results Found'];
+        } else {
+          newData = results.data;
+        }
+        this.setState({
+          tweets: newData
+        })
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
-  handleChange(e) {
-    this.setState({ text: e.target.value });
+  handleChange(event) {
+    this.setState({searchValue: event.target.value});
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    this.setState(() => ({
-      text: ''
-    }));
+    this.search(this.state.searchValue)
   }
 
   render() {
     return (
       <div>
-        <h3>CHOMP</h3>
         <form onSubmit={this.handleSubmit}>
-          <input
-            onChange={this.handleChange}
-            value={this.state.text}
-          />
-          <button>
-            GO
-          </button>
+          <label>
+            Search NY Times Tweets<br />
+            <input type="text" value={this.state.searchValue} onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
         </form>
+        <Tweets tweets={this.state.tweets} />
       </div>
     );
   }
 
 }
 
-ReactDOM.render(<TodoApp />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

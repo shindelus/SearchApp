@@ -1,98 +1,12 @@
 var express = require('express');
 var axios = require('axios');
-var request = require('request');
-var cheerio = require('cheerio');
-var fs = require('fs');
+var redis = require('redis');
+var data = require('./dataParser');
 
-
-
-url = 'https://www.yelp.com/biz/el-farolito-san-francisco-2';
-var reviews = [];
-var pageNum = 0;
-
-while (pageNum < 500){
-  if (pageNum < 20) {
-    pageStr = '';
-  } else {
-    var pageStr = '?start=' + pageNum.toString();
-  }
-  axios.get(url + pageStr)
-    .then((result) => {
-      var $ = cheerio.load(result.data);
-      $('.review-content p').each(function(i, el) {
-        var tempReview = ''
-        el.children.forEach((node)=> {
-          if (node.data) {
-            tempReview += ' ' + node.data
-          }
-        })
-        reviews.push(tempReview);
-      });
-    })
-  pageNum += 20;
-}
-
-let blewMyMind = [];
-let eatAgain = [];
-let notEatAgain = [];
-
-separateSentences = (string) => {
-  return string.split('');
-}
-
-parseSentence = (string) => {
-
-}
-
-
-
-// setTimeout(() => {
-//   console.log(reviews[12]);
-// }, 3000);
-
-
-// request(url, (err, res, body) => {
-//   var $ = cheerio.load(body);
-//   $('.review-content p').each(function(i, el) {
-//     var tempReview = ''
-//     el.children.forEach((node)=> {
-//       if (node.data) {
-//         tempReview += ' ' + node.data
-//       }
-//     })
-//     reviews.push(tempReview);
-//   });
-//   console.log(reviews);
-// })
-
-
-
-
-
-// while (pageNum < 1000){
-//   if (pageNum < 20) {
-//     pageStr = '';
-//   } else {
-//     var pageStr = '?start=' + pageNum.toString();
-//   }
-//   request(url + pageStr, (err, res, body) => {
-//     var $ = cheerio.load(body);
-//     console.log($)
-//     $('.review-content p').each(function(i, el) {
-//       var tempReview = ''
-//       el.children.forEach((node)=> {
-//         if (node.data) {
-//           tempReview += ' ' + node.data
-//         }
-//       })
-//       reviews.push(tempReview);
-//     });
-//   })
-//   pageNum += 20;
-//   console.log(reviews);
-// }
-
-
+var client = redis.createClient();
+client.on('connect', function() {
+  console.log('Connected to Redis ...')
+})
 
 var app = express();
 
@@ -100,6 +14,29 @@ app.use(express.static('dist'));
 
 app.get("/", function(req, res){
   res.sendFile(__dirname + '/index.html')
+})
+
+app.get('/search', function(req, res) {
+  if (!req.query.search) {
+    res.send(data.tweets)
+  } else {
+    let searchResults = data.search(req.query.search);
+    res.send(searchResults)
+  }
+
+  // let id = req.body.id;
+  // client.hgetall(id, function(err, obj) {
+  //   if (!obj) {
+  //     res.render('search', {
+  //       error: 'No results found'
+  //     });
+  //   } else {
+  //     obj.id = id;
+  //     res.render('results', {
+  //       user: obj
+  //     })
+  //   }
+  // })
 })
 
 var port = process.env.PORT || 3001;
