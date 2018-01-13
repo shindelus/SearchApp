@@ -1,4 +1,4 @@
-import Tweets from './tweets';
+import Tweets from './Components/tweets';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
@@ -31,7 +31,8 @@ class App extends React.Component {
           newData = results.data;
         }
         this.setState({
-          tweets: newData
+          tweets: newData,
+          searchValue: ''
         })
       })
       .catch(error => {

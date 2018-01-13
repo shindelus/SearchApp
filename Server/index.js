@@ -2,6 +2,7 @@ var express = require('express');
 var axios = require('axios');
 var redis = require('redis');
 var data = require('./dataParser');
+const path = require('path');
 
 var client = redis.createClient();
 client.on('connect', function() {
@@ -10,10 +11,10 @@ client.on('connect', function() {
 
 var app = express();
 
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, '../dist')));
 
 app.get("/", function(req, res){
-  res.sendFile(__dirname + '/index.html')
+  res.sendFile(path.join(__dirname, '../Client/index.html'));
 })
 
 app.get('/search', function(req, res) {
@@ -41,4 +42,3 @@ app.get('/search', function(req, res) {
 
 var port = process.env.PORT || 3001;
 app.listen(port, () => console.log('Example app listening on port 3001!'))
-

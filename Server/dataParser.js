@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const fileData = fs.readFileSync(path.join(__dirname, './tweetData.txt'), 'utf8');
+const fileData = fs.readFileSync(path.join(__dirname, '../tweetData.txt'), 'utf8');
 
 // Separates file string into an array of tweet strings
 let parseFileIntoTweets = (data) => {
@@ -56,7 +56,6 @@ let createSortedIndices = (indexCount) => {
   orderedIndices.sort((a, b) => {
     return b[1] - a[1];
   })
-  console.log(orderedIndices)
   return orderedIndices;
 }
 
@@ -94,11 +93,6 @@ let tweetData = createTweetObjects(tweets);
 let index = createWordIndex(tweetData);
 
 module.exports = { search: search, tweets: tweets };
-
-
-
-
-
 
 
 
