@@ -14,6 +14,6 @@ npm install
 
 To run webpack build: `npm build`
 
-To run redis server `redis-server`
+To run redis server `npm server`
 
 To run server: `npm start`
