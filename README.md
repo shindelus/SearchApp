@@ -5,10 +5,11 @@ SearchApp searches through NY Times Tweets and returns the results to the user
 ## Requirements
 
 - Node 6.10.x
+- Redis 3.2.x
 
 ### Installing System Dependencies
 
-npm install
+- npm install
 
 ## Running the App
 
