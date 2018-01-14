@@ -15,7 +15,7 @@ SearchApp searches through NY Times Tweets and returns the results to the user
 
 To run webpack build: `npm run build`
 
-To run redis server `npm run server`
+To run redis server: `npm run server`
 
 To run unit tests: `npm test`
 
