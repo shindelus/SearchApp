@@ -15,6 +15,8 @@ class App extends React.Component {
     this.search = this.search.bind(this);
     this.renderText = this.renderText.bind(this);
     this.searchHashtagOrHandle = this.searchHashtagOrHandle.bind(this);
+    this.linkHashtags = this.linkHashtags.bind(this);
+    this.linkHandles = this.linkHandles.bind(this);
   }
 
   componentWillMount() {
@@ -33,24 +35,41 @@ class App extends React.Component {
         this.setState({
           tweets: newData,
           searchValue: ''
-        })
+        });
       })
       .catch(error => {
         console.log(error)
-      })
+      });
   }
 
   searchHashtagOrHandle(input) {
-    console.log(input)
-    this.search(input)
+    this.search(input);
   }
 
   renderText(text) {
-    var tokens = text.split(/@(\S*)/g);
+    return this.linkHandles(text);
+  }
+
+  linkHashtags(text) {
+    var tokens = text.split(/#(\S*)/g);
     for (var i = 1; i < tokens.length; i += 2) {
-      let handle = '@' + tokens[i]
+      let hashtag = '#' + tokens[i];
       tokens[i] = <u><span href='#' onClick={() => {
-        this.searchHashtagOrHandle(handle)}}>{handle}</span></u>;
+        this.searchHashtagOrHandle(hashtag)}}>{hashtag}</span></u>;
+    }
+    return <span className="line">{tokens}</span>;
+  }
+
+  linkHandles(text) {
+    var tokens = text.split(/@(\S*)/g);
+    for (var i = 0; i < tokens.length; i += 1) {
+      if (i % 2 === 1) {
+        let handle = '@' + tokens[i];
+        tokens[i] = <u><span href='#' onClick={() => {
+          this.searchHashtagOrHandle(handle)}}>{handle}</span></u>;
+      } else {
+        tokens[i] = this.linkHashtags(tokens[i]);
+      }
     }
     return <span className="line">{tokens}</span>;
   }
@@ -61,7 +80,7 @@ class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.search(this.state.searchValue)
+    this.search(this.state.searchValue);
   }
 
   render() {
@@ -82,3 +101,10 @@ class App extends React.Component {
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
+
+
+
+
+
+
+

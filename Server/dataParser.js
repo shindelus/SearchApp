@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+let prevSearches = {};
 const fileData = fs.readFileSync(path.join(__dirname, '../tweetData.txt'), 'utf8');
 
 // Separates file string into an array of tweet strings
@@ -13,7 +14,8 @@ let parseFileIntoTweets = (data) => {
   return tweets;
 }
 
-// Creates an array of objects that contains a tweet and a key-value pair for each word in the tweet
+// Creates an array of objects that contains a tweet and a key-value pair for each word in the tweet.
+// The key-value pair excludes less desired search words.
 let createTweetObjects = (tweets) => {
   let excludedWords = ['after', 'although', 'as', 'if', 'though', 'because', 'before', 'even', 'that', 'the', 'is', 'unless', 'until', 'while', 'and', 'to', 'in', 'for', 'of', 'at', 'are', 'a', 'or'];
   let tweetData = [];
@@ -32,11 +34,12 @@ let createTweetObjects = (tweets) => {
   return tweetData;
 }
 
-// creates a key-value pair word index where the key is the word and the value is an array of indices of tweets containing that word
+// Creates a key-value pair word index where the key is each word and the value is an array
+// of indices of tweets containing that word.
 let createWordIndex = (tweetInfo) => {
   let wordIndex = {};
-  tweetInfo.forEach((t, index) => {
-    for (let key in t.words) {
+  tweetInfo.forEach((twt, index) => {
+    for (let key in twt.words) {
       if (wordIndex[key]) {
         wordIndex[key].push(index);
       } else {
@@ -47,61 +50,11 @@ let createWordIndex = (tweetInfo) => {
   return wordIndex;
 }
 
-// creates an array of indices to be sorted for relevance
-let createSortedIndices = (indexCount) => {
-  let orderedIndices = [];
-  for (let key in indexCount) {
-    orderedIndices.push([key, indexCount[key]]);
-  }
-  orderedIndices.sort((a, b) => {
-    return b[1] - a[1];
-  })
-  return orderedIndices;
-}
-
-// looks up the tweets using the sorted indices and saves them as results
-let lookupTweets = (indices) => {
-  let results = [];
-  indices.forEach((index) => {
-    results.push(tweets[index[0]]);
-  })
-  return results;
-}
-
-// checks each word in search, counts the word matches and corresponding tweet indices, then looks up tweets in order
-let search = (searchInput) => {
-  let indexWordCountObj = {};
-  let searchedWords = searchInput.trim().split(' ');
-  searchedWords.forEach((searchedWord) => {
-    // if the search input word is in the index, put it in the indexWordCountObj along with a count
-    let sWord = searchedWord.toLowerCase();
-    if (index[sWord]) {
-      index[sWord].forEach((index) => {
-        if (indexWordCountObj[index]) {
-          indexWordCountObj[index]++;
-        } else {
-          indexWordCountObj[index] = 1;
-        }
-      })
-    }
-  })
-  return lookupTweets(createSortedIndices(indexWordCountObj));
-}
-
 let tweets = parseFileIntoTweets(fileData);
 let tweetData = createTweetObjects(tweets);
 let index = createWordIndex(tweetData);
 
-module.exports = { search: search, tweets: tweets };
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports = {
+  tweets: tweets,
+  index: index
+};

@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node server/index.js",
-    "webpack": "webpack"
+    "build": "webpack",
+    "server": "redis-server"
   },
   "author": "",
   "license": "ISC",
