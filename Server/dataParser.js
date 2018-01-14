@@ -56,5 +56,24 @@ let index = createWordIndex(tweetData);
 
 module.exports = {
   tweets: tweets,
-  index: index
+  index: index,
+  createTweetObjects: createTweetObjects,
+  createWordIndex: createWordIndex
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -23,6 +23,7 @@ let search = (searchInput) => {
   return createSortedIndices(indexWordCountObj);
 };
 
+
 // Creates an array of indices that are sorted for most word matches
 let createSortedIndices = (indexCount) => {
   let orderedIndices = [];
@@ -48,7 +49,8 @@ let lookupTweets = (indices) => {
 module.exports = {
   search: search,
   tweets: data.tweets,
-  lookupTweets: lookupTweets
+  lookupTweets: lookupTweets,
+  createSortedIndices: createSortedIndices
 };
 
 

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/index.js",
     "build": "webpack",
-    "server": "redis-server"
+    "server": "redis-server",
+    "test": "node server/unitTests.js"
   },
   "author": "",
   "license": "ISC",

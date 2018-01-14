@@ -17,4 +17,6 @@ To run webpack build: `npm run build`
 
 To run redis server `npm run server`
 
+To run unit tests: `npm test`
+
 To run server: `npm start`
